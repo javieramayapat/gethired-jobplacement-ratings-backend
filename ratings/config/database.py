@@ -13,12 +13,11 @@ DB_HOST = os.getenv("DB_HOST")
 DB_DATABASE = os.getenv("DB_DATABASE")
 
 
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:postgres@postgres_db/jobplacement-ratings"
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:postgres@postgresql/jobplacement-ratings"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL
 )
-
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

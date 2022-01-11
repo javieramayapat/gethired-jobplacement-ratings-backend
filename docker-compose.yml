@@ -1,16 +1,7 @@
 version: '3'
 
 services:
-    postgres_db:
-        image: postgres:14
-        restart: always
-        ports:
-          - 5432:5432
-        environment:
-          - POSTGRES_USER=postgres
-          - POSTGRES_PASSWORD=postgres
-        volumes:
-          - ./db:/docker-entrypoint-initdb.d  # cargar base de datos
+
     app:
         container_name: fastapi_backend
         build:
@@ -19,20 +10,33 @@ services:
             - .:/code
         ports:
             - "8000:8000"
+        links:
+            - "postgresql:postgresql"
         depends_on:
-          - postgres_db
-        links: # connection between containers
-          - "postgres_db:postgres_db"
+            - postgresql
+
+    postgresql:
+        image: postgres:14
+        restart: always
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+        volumes:
+            - ./db:/docker-entrypoint-initdb.d
+            - pgdata:/var/lib/postgresql/data/
 
     pgadmin:
         container_name: pg_admin
         image: dpage/pgadmin4
         environment:
-          PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
-          PGADMIN_DEFAULT_PASSWORD: "admin"
+            PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+            PGADMIN_DEFAULT_PASSWORD: "admin"
         ports:
-          - "80:80"
+            - "80:80"
         depends_on:
-          - postgres_db
+            - postgresql
+
 volumes:
     pgdata:
